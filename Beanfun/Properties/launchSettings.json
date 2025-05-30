@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Beanfun (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "Beanfun (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
