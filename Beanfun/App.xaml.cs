@@ -32,7 +32,7 @@ namespace Beanfun
     public partial class App : Application
     {
         private Window? _window;
-        public static IServiceProvider Services { get; private set; } = null!;
+        public static IServiceProvider? Services { get; private set; }
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
@@ -60,6 +60,8 @@ namespace Beanfun
         private static void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<IDialogService, DialogService>();
+            services.AddSingleton<ILoginService, LoginService>();
+
             services.AddTransient<LoginPageViewModel>();
         }
     }

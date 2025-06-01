@@ -9,37 +9,33 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Xaml.Controls;
 using Beanfun.Interfaces;
 using Microsoft.UI.Xaml;
+using Beanfun.Models;
 
 namespace Beanfun.ViewModels
 {
-    public partial class LoginPageViewModel(IDialogService dialogService) : ObservableObject
+    public partial class LoginPageViewModel(IDialogService dialogService, ILoginService loginService) : ObservableObject
     {
-        private string account = string.Empty;
-
-        public string Account
-        {
-            get => account;
-            set => SetProperty(ref account, value);
-        }
-
-        private string password = string.Empty;
-
-        public string Password
-        {
-            get => password;
-            set => SetProperty(ref password, value);
-        }
+        public AccountLoginModel Account { get; set; } = new();
 
         private readonly IDialogService dialogService = dialogService;
+        private readonly ILoginService loginService = loginService;
 
         [RelayCommand]
         public async Task LoginAsync(XamlRoot xamlRoot)
         {
-            bool isLoginSuccess = false;
+            LoginResult loginResult = await loginService.LoginAsync(Account);
 
-            if (!isLoginSuccess)
+            if (loginResult.Success)
             {
-                await dialogService.ShowMessageAsync("登入失敗", "帳號或密碼錯誤", xamlRoot);
+                await dialogService.ShowMessageAsync("登入", "登入成功", xamlRoot);
+
+            }
+            else
+            {
+                if (loginResult.ErrorMessage != null)
+                {
+                    await dialogService.ShowMessageAsync("登入", loginResult.ErrorMessage, xamlRoot);
+                }
             }
         }
     }
