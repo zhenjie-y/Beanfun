@@ -31,7 +31,7 @@
 
             <TextBox Grid.Row="0" 
                      PlaceholderText="帳號"
-                     Text="{x:Bind ViewModel.Account.Username, Mode=TwoWay}"/>
+                     Text="{x:Bind ViewModel.Username, Mode=TwoWay}"/>
 
             <PasswordBox Grid.Row="1" 
                          PlaceholderText="密碼"

@@ -9,6 +9,6 @@ namespace Beanfun.Interfaces
 {
     public interface ILoginService
     {
-        Task<LoginResult> LoginAsync(AccountLoginModel loginModel);
+        Task<LoginResult> LoginAsync(LoginRequest loginRequest);
     }
 }

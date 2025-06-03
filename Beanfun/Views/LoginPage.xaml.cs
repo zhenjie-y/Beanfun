@@ -25,7 +25,7 @@ namespace Beanfun.Views
     /// </summary>
     public sealed partial class LoginPage : Page
     {
-        public LoginPageViewModel? ViewModel { get; }
+        public LoginViewModel? ViewModel { get; }
 
         public LoginPage()
         {
@@ -33,7 +33,7 @@ namespace Beanfun.Views
 
             if (App.Services != null)
             {
-                ViewModel = App.Services.GetRequiredService<LoginPageViewModel>();
+                ViewModel = App.Services.GetRequiredService<LoginViewModel>();
 
                 DataContext = ViewModel;
             }
@@ -41,12 +41,12 @@ namespace Beanfun.Views
 
         private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
         {
-            if (DataContext is not LoginPageViewModel ViewModel)
+            if (DataContext is not LoginViewModel ViewModel)
             {
                 return;
             }
 
-            ViewModel.Account.Password = ((PasswordBox)sender).Password.ToString();
+            ViewModel.Password = ((PasswordBox)sender).Password.ToString();
         }
     }
 }

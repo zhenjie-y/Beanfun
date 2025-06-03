@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,26 +9,15 @@ namespace Beanfun.Models
 {
     public class LoginResult
     {
-        public bool Success { get; set; } = false;
+        public bool IsSuccess { get; set; } = false;
         public string? ErrorMessage { get; set; }
+
+        public string? WebToken { get; set; }
     }
 
-    public class AccountLoginModel
+    public class LoginRequest
     {
-        private string username = string.Empty;
-
-        public string Username
-        {
-            get => username;
-            set => username = value;
-        }
-
-        private string password = string.Empty;
-
-        public string Password
-        { 
-            get => password;
-            set => password = value;
-        }
+        public string? Username { get; set; }
+        public string? Password { get; set; }
     }
 }
