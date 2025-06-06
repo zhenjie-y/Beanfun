@@ -15,10 +15,10 @@ using Beanfun.Services;
 
 namespace Beanfun.ViewModels
 {
-    public partial class LoginViewModel(IDialogService dialogService, IEnumerable<ILoginService> loginServices) : ObservableObject
+    public partial class LoginViewModel(IDialogService dialogService, AccountLoginService accountLoginService) : ObservableObject
     {
         private readonly IDialogService dialogService = dialogService;
-        private readonly IDictionary<string, ILoginService> services = loginServices.ToDictionary(service => service.GetType().Name);
+        private readonly AccountLoginService accountLoginService = accountLoginService;
 
         private string? username;
         private string? password;
@@ -44,12 +44,7 @@ namespace Beanfun.ViewModels
                 Password = password
             };
 
-            if (!services.TryGetValue("AccountLoginService", out var service))
-            {
-                return;
-            }
-
-            LoginResult loginResult = await service.LoginAsync(loginRequest);
+            LoginResult loginResult = await accountLoginService.LoginAsync(loginRequest);
 
             if (loginResult.IsSuccess)
             {

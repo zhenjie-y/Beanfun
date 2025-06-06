@@ -15,7 +15,7 @@ using Windows.Security.Authentication.Web.Core;
 
 namespace Beanfun.Services
 {
-    partial class AccountLoginService : ILoginService
+    public partial class AccountLoginService
     {
         private readonly HttpClientHandler? handler;
         private readonly HttpClient? httpClient;

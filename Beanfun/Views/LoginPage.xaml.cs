@@ -25,18 +25,13 @@ namespace Beanfun.Views
     /// </summary>
     public sealed partial class LoginPage : Page
     {
-        public LoginViewModel? ViewModel { get; }
+        public LoginViewModel? ViewModel { get; } = App.Services?.GetRequiredService<LoginViewModel>();
 
         public LoginPage()
         {
             InitializeComponent();
 
-            if (App.Services != null)
-            {
-                ViewModel = App.Services.GetRequiredService<LoginViewModel>();
-
-                DataContext = ViewModel;
-            }
+            DataContext = ViewModel;
         }
 
         private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
