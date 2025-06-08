@@ -36,12 +36,24 @@ namespace Beanfun.Views
 
         private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
         {
-            if (DataContext is not LoginViewModel ViewModel)
+            if (DataContext is not LoginViewModel viewModel)
             {
                 return;
             }
 
-            ViewModel.Password = ((PasswordBox)sender).Password.ToString();
+            viewModel.Password = ((PasswordBox)sender).Password.ToString();
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+
+            if (ViewModel is not LoginViewModel loginViewModel)
+            {
+                return;
+            }
+
+            loginViewModel.OnNavigatedToAsync();
         }
     }
 }

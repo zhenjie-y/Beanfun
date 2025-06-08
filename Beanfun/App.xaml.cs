@@ -61,6 +61,7 @@ namespace Beanfun
         {
             services.AddTransient<IDialogService, DialogService>();
             services.AddTransient<AccountLoginService>();
+            services.AddTransient<QRCodeLoginService>();
             services.AddTransient<LoginViewModel>();
         }
     }

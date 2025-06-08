@@ -13,7 +13,7 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
-            <!--<ColumnDefinition Width="*"/>-->
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         
         <!--Account-->
@@ -63,5 +63,20 @@
         </Grid>
         
         <!--QRCode-->
+        <Grid Grid.Column="1"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            
+            <Image Grid.Column="1"
+                   Source="{x:Bind ViewModel.QRCodeImage, Mode=OneWay}" 
+                   Margin="15"/>
+            
+        </Grid>
     </Grid>
 </Page>

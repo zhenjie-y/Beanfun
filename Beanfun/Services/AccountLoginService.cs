@@ -60,7 +60,7 @@ namespace Beanfun.Services
             httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36");
         }
 
-        public async Task<LoginResult> LoginAsync(LoginRequest loginRequest)
+        public async Task<LoginResult> LoginAsync(AccountLoginRequest account)
         {
             try
             {
@@ -78,7 +78,7 @@ namespace Beanfun.Services
                     return loginResult;
                 }
 
-                loginResult = await GetAuthKeyAsync(loginRequest);
+                loginResult = await GetAuthKeyAsync(account);
 
                 if (!loginResult.IsSuccess)
                 {
@@ -171,7 +171,7 @@ namespace Beanfun.Services
             }
         }
 
-        private async Task<LoginResult> GetAuthKeyAsync(LoginRequest loginRequest)
+        private async Task<LoginResult> GetAuthKeyAsync(AccountLoginRequest account)
         {
             if (!ViewStateRegex().IsMatch(LoginHtml))
             {
@@ -199,8 +199,8 @@ namespace Beanfun.Services
                 { "__VIEWSTATE", viewState },
                 { "__VIEWSTATEGENERATOR", viewStateGenerator },
                 { "__EVENTVALIDATION", eventValidation },
-                { "t_AccountID", loginRequest.Username ?? string.Empty },
-                { "t_Password", loginRequest.Password ?? string.Empty },
+                { "t_AccountID", account.Username ?? string.Empty },
+                { "t_Password", account.Password ?? string.Empty },
                 { "btn_login", "登入" }
             };
 
