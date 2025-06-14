@@ -23,7 +23,7 @@ namespace Beanfun.Views
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class LoginPage : Page
+    public sealed partial class LoginPage : Page, IDisposable
     {
         public LoginViewModel? ViewModel { get; } = App.Services?.GetRequiredService<LoginViewModel>();
 
@@ -34,9 +34,14 @@ namespace Beanfun.Views
             DataContext = ViewModel;
         }
 
+        public void Dispose()
+        {
+            ViewModel?.Dispose();
+        }
+
         private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
         {
-            if (DataContext is not LoginViewModel viewModel)
+            if (ViewModel is not LoginViewModel viewModel)
             {
                 return;
             }
@@ -54,6 +59,18 @@ namespace Beanfun.Views
             }
 
             loginViewModel.OnNavigatedToAsync();
+        }
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+
+            if (this.Content is not IDisposable disposable)
+            {
+                return;
+            }
+
+            disposable.Dispose();
         }
     }
 }

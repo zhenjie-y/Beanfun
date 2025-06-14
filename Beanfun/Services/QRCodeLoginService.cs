@@ -1,17 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using ABI.Windows.ApplicationModel.Activation;
 using Beanfun.Models;
+using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Newtonsoft.Json.Linq;
 using Windows.Storage.Streams;
+using static System.Net.WebRequestMethods;
 //using Windows.Web.Http;
 
 namespace Beanfun.Services
@@ -22,12 +27,19 @@ namespace Beanfun.Services
         private readonly HttpClient? httpClient;
         private readonly CookieContainer cookieContainer = new();
 
+        private DispatcherQueueTimer? pollingTimer;
+        private readonly DispatcherQueue dispatcherQueue = DispatcherQueue.GetForCurrentThread();
+
         private string SessionKey { get; set; } = string.Empty;
         private string LoginHtml { get; set; } = string.Empty;
         private string EncryptData { get; set; } = string.Empty;
         private string ViewState { get; set; } = string.Empty;
         private string EventValidation { get; set; } = string.Empty;
         private string QRCodeImageUrl { get; set; } = string.Empty;
+
+        public event EventHandler? LoginSuccessEvent;
+
+        public event EventHandler? TokenExpired;
 
         [GeneratedRegex("skey=(.*)&display")]
         private static partial Regex SessionKeyRegex();
@@ -247,6 +259,89 @@ namespace Beanfun.Services
             catch (Exception ex)
             {
                 return new LoginResult { IsSuccess = false, ErrorMessage = ex.Message };
+            }
+        }
+
+        public void StartPolling()
+        {
+            if (pollingTimer is not null && pollingTimer.IsRunning)
+            {
+                pollingTimer.Stop();
+            }
+
+            pollingTimer = dispatcherQueue.CreateTimer();
+
+            pollingTimer.Interval = TimeSpan.FromSeconds(2);
+
+            pollingTimer.Tick += async (s, e) => await CheckQRCodeLogin();
+
+            pollingTimer.Start();
+        }
+
+        private async Task CheckQRCodeLogin()
+        {
+            var result = await GetLoginStatusAsync();
+
+            switch (result)
+            {
+                case "Success":
+                    LoginSuccessEvent?.Invoke(this, EventArgs.Empty);
+                    break;
+                case "Failed":
+                    break;
+                case "Token Expired":
+                    TokenExpired?.Invoke(this, EventArgs.Empty);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private async Task<string> GetLoginStatusAsync()
+        {
+            try
+            {
+                if (httpClient is null)
+                {
+                    return "Failed";
+                }
+
+                httpClient.DefaultRequestHeaders.Referrer = new Uri($"https://tw.newlogin.beanfun.com/login/qr_form.aspx?skey={SessionKey}");
+
+                var payload = new FormUrlEncodedContent(
+                [
+                    new KeyValuePair<string, string>("status", EncryptData)
+                ]);
+
+                var response = await httpClient.PostAsync("https://tw.newlogin.beanfun.com/generic_handlers/CheckLoginStatus.ashx", payload);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    return "Failed";
+                }
+
+                var content = await response.Content.ReadAsStringAsync();
+
+                JObject json = JObject.Parse(content);
+
+                if (!json.TryGetValue("ResultMessage", out var value))
+                {
+                    return "Failed";
+                }
+
+                return value.ToString();
+            }
+            catch (Exception)
+            {
+                return "Failed";
+            }
+        }
+
+        public void EndPolling()
+        {
+            if (pollingTimer is not null && pollingTimer.IsRunning)
+            {
+                pollingTimer.Stop();
             }
         }
     }

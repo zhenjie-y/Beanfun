@@ -59,9 +59,9 @@ namespace Beanfun
 
         private static void ConfigureServices(IServiceCollection services)
         {
-            services.AddTransient<IDialogService, DialogService>();
-            services.AddTransient<AccountLoginService>();
-            services.AddTransient<QRCodeLoginService>();
+            services.AddSingleton<IDialogService, DialogService>();
+            services.AddSingleton<AccountLoginService>();
+            services.AddSingleton<QRCodeLoginService>();
             services.AddTransient<LoginViewModel>();
         }
     }

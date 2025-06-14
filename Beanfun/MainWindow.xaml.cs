@@ -29,7 +29,17 @@ namespace Beanfun
         {
             InitializeComponent();
 
+            this.Closed += MainWindow_Closed;
+
             MainFrame.Navigate(typeof(LoginPage));
+        }
+
+        private void MainWindow_Closed(object sender, WindowEventArgs args)
+        {
+            if (MainFrame.Content is IDisposable disposablePage)
+            {
+                disposablePage.Dispose();
+            }
         }
     }
 }

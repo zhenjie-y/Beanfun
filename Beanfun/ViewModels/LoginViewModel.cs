@@ -13,16 +13,15 @@ using Beanfun.Models;
 using Windows.Media.Protection;
 using Beanfun.Services;
 using Microsoft.UI.Xaml.Media.Imaging;
+using WinRT.Interop;
 
 namespace Beanfun.ViewModels
 {
-    public partial class LoginViewModel(IDialogService dialogService, 
-                                        AccountLoginService accountLoginService,
-                                        QRCodeLoginService qrcodeLoginService) : ObservableObject
+    public partial class LoginViewModel : ObservableObject, IDisposable
     {
-        private readonly IDialogService dialogService = dialogService;
-        private readonly AccountLoginService accountLoginService = accountLoginService;
-        private readonly QRCodeLoginService qrcodeLoginService = qrcodeLoginService;
+        private readonly IDialogService dialogService;
+        private readonly AccountLoginService accountLoginService;
+        private readonly QRCodeLoginService qrcodeLoginService;
 
         private static readonly BitmapImage defaultQRCodeImage = new BitmapImage(new Uri("ms-appx:///Assets/Square150x150Logo.scale-200.png"));
 
@@ -48,6 +47,25 @@ namespace Beanfun.ViewModels
             set => SetProperty(ref qrCodeImage, value);
         }
 
+        public LoginViewModel(IDialogService dialogService,
+                              AccountLoginService accountLoginService,
+                              QRCodeLoginService qrcodeLoginService)
+        {
+            this.dialogService = dialogService;
+            this.accountLoginService = accountLoginService;
+            this.qrcodeLoginService = qrcodeLoginService;
+
+            qrcodeLoginService.LoginSuccessEvent += OnLoginSuccess;
+            qrcodeLoginService.TokenExpired += OnTokenExpiredAsync;
+        }
+
+        public void Dispose()
+        {
+            qrcodeLoginService.EndPolling();
+
+            GC.SuppressFinalize(this);
+        }
+
         [RelayCommand]
         public async Task LoginAsync(XamlRoot xamlRoot)
         {
@@ -71,6 +89,11 @@ namespace Beanfun.ViewModels
 
         public async void OnNavigatedToAsync()
         {
+            await InitializeQRCodeAsync();
+        }
+
+        private async Task InitializeQRCodeAsync()
+        {
             LoginResult loginResult = await qrcodeLoginService.GetQRCodeAsync();
 
             if (!loginResult.IsSuccess)
@@ -79,6 +102,23 @@ namespace Beanfun.ViewModels
             }
 
             QRCodeImage = loginResult.QrCodeImage ?? defaultQRCodeImage;
+
+            if (QRCodeImage == defaultQRCodeImage)
+            {
+                return;
+            }
+
+            qrcodeLoginService.StartPolling();
+        }
+
+        private void OnLoginSuccess(object? sender, EventArgs e)
+        {
+
+        }
+
+        private async void OnTokenExpiredAsync(object? sender, EventArgs e)
+        {
+            await InitializeQRCodeAsync();
         }
     }
 }

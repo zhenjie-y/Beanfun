@@ -10,7 +10,9 @@
     xmlns:vm="using:Beanfun.ViewModels"
     mc:Ignorable="d">
 
-    <Grid>
+    <Grid HorizontalAlignment="Center"
+          VerticalAlignment="Center">
+        
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
@@ -75,7 +77,9 @@
             
             <Image Grid.Column="1"
                    Source="{x:Bind ViewModel.QRCodeImage, Mode=OneWay}" 
-                   Margin="15"/>
+                   Margin="15"
+                   Height="200"
+                   Width="200"/>
             
         </Grid>
     </Grid>
