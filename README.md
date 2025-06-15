@@ -11,17 +11,17 @@ This application aims to provide a smoother, cleaner experience than the officia
 
 ### ✅ Completed
 
-- *(None Yet)*
+- Traditional Beanfun account login (username/password)
+- QR Code login support
+- LoginPage UI/UX
 
 ### 🚧 In Development
 
-- Traditional Beanfun account login (username/password)
+- Game Page UI and navigation after login
+- OTP (One-Time Password) retrieval
 
 ### 📝 Planned
-- QR Code login support
-- OTP (One-Time Password) retrieval
 - Game Downloader with progress display
-- Multi-account management
 
 ---
 
