@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="Beanfun.Views.LoginPage"
+    x:Name="Page"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Beanfun.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="using:Beanfun.ViewModels"
+    mc:Ignorable="d">
+
+    <Grid HorizontalAlignment="Center"
+          VerticalAlignment="Center">
+        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        
+        <!--Account-->
+        <Grid Grid.Column="0" 
+              HorizontalAlignment="Center" 
+              VerticalAlignment="Center" 
+              Width="200"
+              RowSpacing="16">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <!--<RowDefinition Height="*"/>-->
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <TextBox Grid.Row="0" 
+                     PlaceholderText="帳號"
+                     Text="{x:Bind ViewModel.Username, Mode=TwoWay}"/>
+
+            <PasswordBox Grid.Row="1" 
+                         PlaceholderText="密碼"
+                         PasswordChanged="PasswordBox_PasswordChanged"/>
+
+            <!--<Grid Grid.Row="2"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <CheckBox Grid.Column="0" 
+                          Content="記住帳號" 
+                          HorizontalAlignment="Stretch"/>
+                
+                <CheckBox Grid.Column="1" 
+                          Content="自動登入" 
+                          HorizontalAlignment="Right"/>
+            </Grid>-->
+
+            <Button Grid.Row="3" 
+                    Content="登入" 
+                    HorizontalAlignment="Stretch"
+                    Command="{x:Bind ViewModel.LoginCommand}"
+                    CommandParameter="{x:Bind Page.XamlRoot}"/>
+
+        </Grid>
+        
+        <!--QRCode-->
+        <Grid Grid.Column="1"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            
+            <Image Grid.Column="1"
+                   Source="{x:Bind ViewModel.QRCodeImage, Mode=OneWay}" 
+                   Margin="15"
+                   Height="200"
+                   Width="200"/>
+            
+        </Grid>
+    </Grid>
+</Page>
